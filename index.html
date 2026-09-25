@@ -1,0 +1,752 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mal Kast Rewards - النظام المحدث بالكامل أونلاين</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+        body { background-color: #0f172a; color: #f8fafc; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+        .app-container { width: 100%; max-width: 440px; height: 100vh; max-height: 900px; background-color: #1e293b; border-radius: 28px; overflow: hidden; display: flex; flex-direction: column; position: relative; border: 2px solid #334155; }
+        .screen { display: none; flex: 1; flex-direction: column; overflow-y: auto; background-color: #1e293b; }
+        .screen.active { display: flex; }
+        
+        .info-banner { background: linear-gradient(135deg, #0284c7, #0369a1); color: #fff; padding: 10px 14px; font-size: 11px; font-weight: 700; border-bottom: 2px solid #38bdf8; display: flex; align-items: flex-start; gap: 8px; line-height: 1.5; }
+        .info-banner i { font-size: 14px; color: #facc15; margin-top: 2px; flex-shrink: 0; }
+
+        .auth-screen { justify-content: center; align-items: center; padding: 24px; background: linear-gradient(135deg, #0f172a, #1e293b); }
+        .auth-card { width: 100%; background: #0f172a; padding: 26px 20px; border-radius: 22px; border: 1px solid #334155; text-align: center; }
+        .logo-title { font-size: 26px; font-weight: 900; color: #38bdf8; margin-bottom: 4px; }
+        .auth-subtitle { color: #94a3b8; font-size: 12px; margin-bottom: 18px; }
+        .auth-tabs { display: flex; background: #1e293b; padding: 4px; border-radius: 12px; margin-bottom: 18px; border: 1px solid #334155; }
+        .auth-tab-btn { flex: 1; padding: 9px; border: none; background: none; color: #94a3b8; font-weight: 700; font-size: 12px; cursor: pointer; border-radius: 9px; }
+        .auth-tab-btn.active { background: #38bdf8; color: #0f172a; }
+        .input-group { margin-bottom: 14px; text-align: right; }
+        .input-group label { display: block; font-size: 11px; color: #94a3b8; margin-bottom: 5px; font-weight: 700; }
+        .input-box { position: relative; display: flex; align-items: center; }
+        .input-box i { position: absolute; right: 14px; color: #64748b; font-size: 13px; }
+        .input-box input, .input-box select { width: 100%; padding: 11px 14px 11px 38px; border-radius: 10px; border: 1px solid #334155; background: #1e293b; color: white; font-size: 13px; outline: none; }
+        .btn-main { width: 100%; padding: 12px; border: none; border-radius: 10px; background: #38bdf8; color: #0f172a; font-weight: 800; font-size: 14px; cursor: pointer; margin-top: 6px; }
+        .form-section { display: none; }
+        .form-section.active { display: block; }
+        .bottom-nav { height: 62px; background: #0f172a; display: flex; justify-content: space-around; align-items: center; border-top: 1px solid #334155; z-index: 10; }
+        .nav-item { background: none; border: none; color: #94a3b8; font-size: 10px; display: flex; flex-direction: column; align-items: center; cursor: pointer; gap: 3px; font-weight: 600; }
+        .nav-item i { font-size: 16px; }
+        .nav-item.active { color: #38bdf8; }
+        .app-header { padding: 14px 16px; display: flex; justify-content: space-between; align-items: center; background: #0f172a; border-bottom: 1px solid #334155; }
+        .balance-badge { background: #334155; padding: 5px 10px; border-radius: 20px; font-size: 11px; font-weight: 800; color: #38bdf8; display: flex; align-items: center; gap: 5px; border: 1px solid #475569; }
+        .content-body { padding: 14px; }
+        .card-box { background: #0f172a; border: 1px solid #334155; border-radius: 16px; padding: 14px; margin-bottom: 12px; }
+        .section-title { font-size: 13px; font-weight: 800; color: #f8fafc; margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+        .task-item { background: #1e293b; border: 1px solid #334155; padding: 11px 13px; border-radius: 11px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 9px; }
+        .task-info h4 { font-size: 12px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+        .task-info p { font-size: 10px; color: #38bdf8; }
+        .do-task-btn { background: #38bdf8; color: #0f172a; border: none; padding: 6px 12px; border-radius: 7px; font-weight: 800; font-size: 11px; cursor: pointer; }
+        .admin-badge { background: #ef4444; color: white; font-size: 9px; padding: 2px 6px; border-radius: 5px; font-weight: 800; }
+        .vip-badge { background: #eab308; color: #0f172a; font-size: 9px; padding: 2px 6px; border-radius: 5px; font-weight: 900; }
+        .wallet-method-card { background: #1e293b; border: 2px solid #334155; border-radius: 12px; padding: 12px; text-align: center; cursor: pointer; transition: 0.2s; }
+        .wallet-method-card.selected { border-color: #38bdf8; background: #0f172a; }
+        .wallet-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-bottom: 12px; }
+        .modal-overlay { position: absolute; inset: 0; background: rgba(0,0,0,0.85); z-index: 100; display: none; justify-content: center; align-items: center; padding: 20px; }
+        .modal-card { background: #0f172a; border: 1px solid #334155; padding: 20px; border-radius: 18px; width: 100%; text-align: center; max-height: 85vh; overflow-y: auto; }
+        .toast-popup { position: fixed; bottom: 75px; left: 50%; transform: translateX(-50%); background: #38bdf8; color: #0f172a; padding: 9px 18px; border-radius: 10px; font-weight: 800; font-size: 12px; z-index: 1000; display: none; text-align: center; }
+        .withdraw-counter-bar { background: #1e293b; border: 1px solid #334155; border-radius: 8px; padding: 8px; margin-bottom: 10px; font-size: 11px; display: flex; justify-content: space-between; align-items: center; }
+        
+        .pricing-table { width: 100%; border-collapse: collapse; font-size: 10px; margin-bottom: 12px; text-align: center; }
+        .pricing-table th, .pricing-table td { border: 1px solid #334155; padding: 6px 4px; }
+        .pricing-table th { background: #1e293b; color: #38bdf8; font-weight: 700; }
+        .pricing-table td { color: #f8fafc; background: #0f172a; }
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        
+        <!-- شاشة تسجيل الدخول -->
+        <div id="auth-screen" class="screen active">
+            <div class="auth-card">
+                <div class="logo-title">Mal Kast</div>
+                <p class="auth-subtitle">المنصة الآمنة المتكاملة للأرباح (أونلاين)</p>
+                
+                <div class="auth-tabs">
+                    <button class="auth-tab-btn active" onclick="switchAuthTab('register', this)">حساب جديد</button>
+                    <button class="auth-tab-btn" onclick="switchAuthTab('login', this)">تسجيل الدخول</button>
+                </div>
+
+                <div id="register-form" class="form-section active">
+                    <div class="input-group">
+                        <label>البريد الإلكتروني</label>
+                        <div class="input-box">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="text" id="reg-email" placeholder="أدخل بريدك الإلكتروني...">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>كلمة المرور</label>
+                        <div class="input-box">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="reg-password" placeholder="أدخل كلمة المرور...">
+                        </div>
+                    </div>
+                    <button class="btn-main" onclick="handleRegister()">إنشاء حساب جديد</button>
+                </div>
+
+                <div id="login-form" class="form-section">
+                    <div class="input-group">
+                        <label>البريد الإلكتروني</label>
+                        <div class="input-box">
+                            <i class="fa-solid fa-envelope"></i>
+                            <input type="text" id="log-email" placeholder="أدخل بريدك المسجل...">
+                        </div>
+                    </div>
+                    <div class="input-group">
+                        <label>كلمة المرور</label>
+                        <div class="input-box">
+                            <i class="fa-solid fa-lock"></i>
+                            <input type="password" id="log-password" placeholder="أدخل كلمة المرور...">
+                        </div>
+                    </div>
+                    <button class="btn-main" onclick="handleLogin()">تسجيل الدخول</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- التطبيق الرئيسي -->
+        <div id="main-app-screen" style="display:none; flex:1; flex-direction:column; overflow:hidden;">
+            
+            <!-- مركز المهام -->
+            <div id="tab-tasks" class="screen active">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div><b>دليل صفحة المهام:</b> نفذ المهام واحصل على مكافآتك (مهام الزيارة 50 توكن، ومهام اللايك 20 توكن)[cite: 3].</div>
+                </div>
+                <div class="app-header">
+                    <div style="display: flex; align-items: center; gap: 6px;">
+                        <span style="font-weight: 800; font-size: 13px;">المهام والجوائز</span>
+                        <span id="role-badge" style="display:none;" class="admin-badge">مشرف</span>
+                        <span id="user-rank-badge" class="vip-badge">عادي</span>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 8px;">
+                        <button onclick="openNotificationsModal()" style="background: #334155; border: 1px solid #475569; color: #38bdf8; width: 30px; height: 30px; border-radius: 50%; cursor: pointer; position: relative;"><i class="fa-solid fa-bell"></i><span id="notif-dot" style="position: absolute; top: 2px; right: 2px; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; display: none;"></span></button>
+                        <div class="balance-badge">
+                            <i class="fa-solid fa-coins"></i> <span id="user-tokens-display">0</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="content-body">
+                    <div class="card-box" style="border-color: #38bdf8; background: linear-gradient(135deg, #0f172a, #1e293b);">
+                        <div class="section-title"><i class="fa-solid fa-chart-line" style="color: #38bdf8;"></i> اللوحة الحية لسجل أرباحك</div>
+                        <div id="live-user-activity-feed" style="max-height: 90px; overflow-y: auto; background: #1e293b; padding: 8px; border-radius: 8px; border: 1px solid #334155;">
+                            <p style="color: #64748b; font-size: 10px; text-align: center;">لا توجد نشاطات حديثة.</p>
+                        </div>
+                    </div>
+
+                    <div class="card-box" style="text-align: center; border-color: #eab308;">
+                        <div class="section-title" style="justify-content: center;"><i class="fa-solid fa-dharmachakra" style="color: #eab308;"></i> عجلة الحظ</div>
+                        <p style="font-size: 11px; color: #94a3b8; margin-bottom: 10px;">قم بتدوير العجلة يومياً!</p>
+                        <button class="btn-main" style="background: #eab308; color: #0f172a;" onclick="spinLuckyWheel()">تدوير العجلة الآن 🎡</button>
+                    </div>
+
+                    <div class="card-box" style="background: linear-gradient(135deg, #1e293b, #0f172a);">
+                        <div class="section-title"><i class="fa-solid fa-gift" style="color: #38bdf8;"></i> المكافأة اليومية</div>
+                        <button class="btn-main" onclick="claimDailyBonus()">استلام الهدية (25 توكن)</button>
+                    </div>
+
+                    <div class="card-box">
+                        <div class="section-title"><i class="fa-solid fa-list-check"></i> المهام المتاحة لك</div>
+                        <div id="tasks-list-container"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- الأصدقاء والقسائم -->
+            <div id="tab-referral" class="screen">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div><b>دليل الإحالة والقسائم:</b> شارك رابطك أو استخدم قسائم المكافآت التي يصنعها المطور[cite: 3].</div>
+                </div>
+                <div class="app-header"><span style="font-weight: 800; font-size: 14px;">نظام الإحالة والقسائم</span></div>
+                <div class="content-body">
+                    <div class="card-box" style="text-align: center; padding: 16px; border-color: #38bdf8;">
+                        <h3 style="font-size: 13px; font-weight: 800; margin-bottom: 8px; color: #38bdf8;"><i class="fa-solid fa-ticket"></i> استخدام قسيمة مطور</h3>
+                        <div class="input-group" style="margin-bottom: 8px;">
+                            <div class="input-box">
+                                <i class="fa-solid fa-key"></i>
+                                <input type="text" id="coupon-code-input" placeholder="اكتب كود القسيمة هنا...">
+                            </div>
+                        </div>
+                        <button class="btn-main" onclick="redeemCouponCode()">تفعيل القسيمة واستلام الجائزة 🎁</button>
+                    </div>
+
+                    <div class="card-box" style="text-align: center; padding: 16px;">
+                        <h3 style="font-size: 13px; font-weight: 800; margin-bottom: 6px;">اربح مع أصدقائك (الإحالة)</h3>
+                        <div style="background: #1e293b; padding: 10px; border-radius: 8px; font-size: 12px; color: #38bdf8; word-break: break-all; border: 1px dashed #475569; margin-bottom: 12px;" id="ref-link-box">https://malkast.app/?ref=user</div>
+                        <button class="btn-main" onclick="copyReferralLink()">نسخ الرابط</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- المعلن -->
+            <div id="tab-advertiser" class="screen">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div><b>دليل المعلن:</b> كلما زاد المبلغ 100 جنيه، تزيد النسبة ويزيد المكسب 10 توكن[cite: 3].</div>
+                </div>
+                <div class="app-header"><span style="font-weight: 800; font-size: 14px;">قسم المعلنين والدعاية</span></div>
+                <div class="content-body">
+                    <div class="card-box" style="border-color: #38bdf8;">
+                        <div class="section-title"><i class="fa-solid fa-wallet" style="color: #38bdf8;"></i> رقم التحويل للمطور</div>
+                        <div style="background: #1e293b; padding: 9px; border-radius: 8px; text-align: center; font-size: 14px; font-weight: 900; color: #38bdf8; border: 1px dashed #475569;">01070490816</div>
+                    </div>
+
+                    <div class="card-box" style="border-color: #eab308;">
+                        <div class="section-title"><i class="fa-solid fa-table" style="color: #eab308;"></i> جدول الباقات والأسعار</div>
+                        <table class="pricing-table">
+                            <tr><th>المبلغ</th><th>نوع المهمة</th><th>مكسب الشخص</th><th>العدد</th></tr>
+                            <tr><td>200 ج.م</td><td>زيارة / لايك</td><td>50 / 20 توكن</td><td>محدث</td></tr>
+                            <tr><td>300 ج.م</td><td>زيارة / لايك</td><td>60 / 30 توكن</td><td>محدث</td></tr>
+                        </table>
+                    </div>
+
+                    <div class="card-box">
+                        <div class="section-title"><i class="fa-solid fa-bullhorn"></i> إرسال إعلان جديد للمراجعة</div>
+                        <div class="input-group">
+                            <label>نوع المهمة</label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-tags"></i>
+                                <select id="adv-type" onchange="fillPackageDetails()">
+                                    <option value="زيارة موقع">زيارة موقع (50 توكن)</option>
+                                    <option value="لايك / تفاعل">لايك أو تفاعل (20 توكن)</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="input-group"><label>عنوان المهمة</label><div class="input-box"><i class="fa-solid fa-pen"></i><input type="text" id="adv-title" placeholder="عنوان المهمة"></div></div>
+                        <div class="input-group"><label>رابط المهمة</label><div class="input-box"><i class="fa-solid fa-link"></i><input type="text" id="adv-url" placeholder="https://example.com"></div></div>
+                        
+                        <div class="input-group">
+                            <label>اختر المبلغ المدفوع</label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-money-bill"></i>
+                                <select id="adv-package-select" onchange="fillPackageDetails()">
+                                    <option value="200">200 ج.م</option>
+                                    <option value="300">300 ج.م</option>
+                                    <option value="400">400 ج.م</option>
+                                    <option value="500">500 ج.م</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="input-group"><label>المكافأة للمستخدم (توكن)</label><div class="input-box"><i class="fa-solid fa-coins"></i><input type="number" id="adv-reward" readonly></div></div>
+                        <div class="input-group"><label>رقم التحويل (إثبات الدفع)</label><div class="input-box"><i class="fa-solid fa-phone"></i><input type="text" id="adv-proof-phone" placeholder="رقمك المحول منه"></div></div>
+                        <button class="btn-main" onclick="submitCampaignWithProof()">إرسال الإعلان للمطور</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- المحفظة -->
+            <div id="tab-wallet" class="screen">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div><b>دليل صفحة المال:</b> اسحب أرباحك بكل سهولة (الحد الأدنى 50 جنيه)[cite: 3].</div>
+                </div>
+                <div class="app-header"><span style="font-weight: 800; font-size: 14px;">محفظتي وسحب الأرباح</span></div>
+                <div class="content-body">
+                    <div class="card-box" style="text-align: center; padding: 20px;">
+                        <h2 id="user-egp-display" style="font-size: 28px; font-weight: 900; color: #38bdf8; margin-bottom: 10px;">0.00 EGP</h2>
+                    </div>
+                    <div class="card-box">
+                        <div class="section-title"><i class="fa-solid fa-money-bill-transfer"></i> اختر وسيلة السحب</div>
+                        <div class="wallet-grid">
+                            <div class="wallet-method-card selected" onclick="selectWalletMethod('فودافون كاش', this)">
+                                <i class="fa-solid fa-mobile-screen-button" style="font-size:18px; color:#ef4444; margin-bottom:4px;"></i>
+                                <div style="font-size:10px; font-weight:800;">فودافون كاش</div>
+                            </div>
+                            <div class="wallet-method-card" onclick="selectWalletMethod('اتصالات كاش', this)">
+                                <i class="fa-solid fa-sim-card" style="font-size:18px; color:#22c55e; margin-bottom:4px;"></i>
+                                <div style="font-size:10px; font-weight:800;">اتصالات كاش</div>
+                            </div>
+                            <div class="wallet-method-card" onclick="selectWalletMethod('أورانج كاش', this)">
+                                <i class="fa-solid fa-wallet" style="font-size:18px; color:#f97316; margin-bottom:4px;"></i>
+                                <div style="font-size:10px; font-weight:800;">أورانج كاش</div>
+                            </div>
+                        </div>
+
+                        <div class="input-group">
+                            <label>المبلغ (الحد الأدنى 50 جنيه)</label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-coins"></i>
+                                <input type="number" id="withdraw-amount-input" placeholder="50" oninput="updateWithdrawCounter()">
+                            </div>
+                        </div>
+
+                        <div class="withdraw-counter-bar">
+                            <span>التوكنات المطلوبة: <b id="counter-tokens-req" style="color: #38bdf8;">0</b></span>
+                            <span>رصيدك الحالي: <b id="counter-user-tokens" style="color: #facc15;">0</b></span>
+                        </div>
+
+                        <div class="input-group">
+                            <label>رقم المحفظة للاستلام</label>
+                            <div class="input-box">
+                                <i class="fa-solid fa-phone"></i>
+                                <input type="text" id="withdraw-phone-input" placeholder="اكتب رقم هاتفك المحمول...">
+                            </div>
+                        </div>
+                        <button class="btn-main" onclick="requestWithdrawal()">تقديم طلب السحب</button>
+                    </div>
+                    <div style="padding: 0 4px;"><button class="btn-main" style="background: #ef4444; color: white;" onclick="logoutUser()">تسجيل الخروج</button></div>
+                </div>
+            </div>
+
+            <!-- لوحة تحكم المشرف -->
+            <div id="tab-admin" class="screen">
+                <div class="info-banner">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <div><b>لوحة تحكم المشرف:</b> إدارة القسائم وصنعها، مراجعة طلبات السحب والإعلانات[cite: 3].</div>
+                </div>
+                <div class="app-header">
+                    <span style="font-weight: 800; font-size: 14px; color: #ef4444;">لوحة تحكم المشرف والأدمن</span>
+                    <span class="admin-badge">ADMIN</span>
+                </div>
+                <div class="content-body">
+                    <div class="card-box" style="border-color: #38bdf8;">
+                        <div class="section-title"><i class="fa-solid fa-ticket" style="color:#38bdf8;"></i> صنع قسيمة مكافأة جديدة 🎟️</div>
+                        <div class="input-group"><label>اسم / كود القسيمة</label><div class="input-box"><i class="fa-solid fa-key"></i><input type="text" id="admin-coupon-name" placeholder="مثال: OMAR2026"></div></div>
+                        <div class="input-group"><label>قيمة الجائزة (بالتوكنز)</label><div class="input-box"><i class="fa-solid fa-coins"></i><input type="number" id="admin-coupon-reward" placeholder="مثال: 500"></div></div>
+                        <button class="btn-main" onclick="createCouponCode()">إنشاء ونشر القسيمة ✨</button>
+                    </div>
+
+                    <div class="card-box" style="border-color: #eab308;">
+                        <div class="section-title"><i class="fa-solid fa-bullhorn" style="color:#eab308;"></i> جدول إعلانات المعلنين المعلقة 📥</div>
+                        <div id="admin-campaigns-list"></div>
+                    </div>
+
+                    <div class="card-box" style="border-color: #38bdf8;">
+                        <div class="section-title"><i class="fa-solid fa-money-check-dollar"></i> طلبات سحب الأرباح المعلقة (أونلاين)</div>
+                        <div id="admin-withdrawals-list"></div>
+                    </div>
+
+                    <div class="card-box" style="border-color: #ef4444; text-align: center;">
+                        <div class="section-title"><i class="fa-solid fa-users-gear" style="color:#ef4444;"></i> التحكم الكامل في الحسابات</div>
+                        <button class="btn-main" style="background: #ef4444; color: white;" onclick="toggleAccountsView()">عرض جميع الحسابات والبيانات 📋</button>
+                        <div id="admin-all-accounts-box" style="display:none; text-align: right; margin-top: 10px;"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- التنقل السفلي -->
+            <div class="bottom-nav">
+                <button class="nav-item active" onclick="switchAppTab('tasks', this)"><i class="fa-solid fa-list-check"></i> المهام</button>
+                <button class="nav-item" onclick="switchAppTab('referral', this)"><i class="fa-solid fa-ticket"></i> الإحالة والقسائم</button>
+                <button class="nav-item" onclick="switchAppTab('advertiser', this)"><i class="fa-solid fa-bullhorn"></i> المعلن</button>
+                <button class="nav-item" onclick="switchAppTab('wallet', this)"><i class="fa-solid fa-wallet"></i> المحفظة</button>
+                <button id="admin-nav-btn" style="display:none;" class="nav-item" onclick="switchAppTab('admin', this)"><i class="fa-solid fa-shield-halved"></i> المشرف</button>
+            </div>
+        </div>
+
+        <!-- مودال الإشعارات -->
+        <div id="notifications-modal" class="modal-overlay">
+            <div class="modal-card">
+                <h3 style="font-size: 15px; font-weight: 800; margin-bottom: 10px; color: #38bdf8;"><i class="fa-solid fa-bell"></i> إشعارات التطبيق</h3>
+                <div id="notifications-list-box" style="text-align: right; max-height: 250px; overflow-y: auto; margin-bottom: 14px;">
+                    <p style="color: #64748b; font-size: 11px; text-align: center;">لا توجد إشعارات جديدة.</p>
+                </div>
+                <button class="btn-main" onclick="closeNotificationsModal()">إغلاق</button>
+            </div>
+        </div>
+
+        <!-- مودال إنجاز المهمة -->
+        <div id="task-modal" class="modal-overlay">
+            <div class="modal-card">
+                <h3 id="modal-task-title" style="font-size: 15px; font-weight: 800; margin-bottom: 10px; color: #38bdf8;">إنجاز المهمة</h3>
+                <p id="modal-task-desc" style="font-size: 11px; color: #94a3b8; margin-bottom: 14px;"></p>
+                
+                <div id="timer-section">
+                    <div id="countdown-number" style="font-size: 35px; font-weight: 900; color: #facc15; margin-bottom: 14px;">10</div>
+                </div>
+
+                <button id="modal-action-btn" class="btn-main" style="display:none;" onclick="closeTaskModal()">إرسال للمراجعة 📥</button>
+                <button class="btn-main" style="background: #475569; color: white; margin-top: 6px;" onclick="closeTaskModal()">إلغاء</button>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="toast-popup" class="toast-popup">تم بنجاح!</div>
+
+    <script>
+        let currentUser = null;
+        
+        // استخدام التخزين السحابي المحلي المشترك المربوط بنظام المتصفحات (JSONbin / localStorage المحدث أونلاين)
+        let activeTasks = JSON.parse(localStorage.getItem('malKastActiveTasks')) || [];
+        let pendingCampaigns = JSON.parse(localStorage.getItem('malKastPendingCampaigns')) || [];
+        let withdrawalsList = JSON.parse(localStorage.getItem('malKastWithdrawals')) || [];
+        let allUsersDatabase = JSON.parse(localStorage.getItem('malKastAllUsersDB')) || {};
+        let userActivities = JSON.parse(localStorage.getItem('malKastUserActivities')) || {};
+        let completedTaskRecords = JSON.parse(localStorage.getItem('malKastCompletedTaskRecords')) || {};
+        let userNotifications = JSON.parse(localStorage.getItem('malKastUserNotifications')) || {};
+        let developerCoupons = JSON.parse(localStorage.getItem('malKastDevCoupons')) || {};
+        let usedCouponsRecord = JSON.parse(localStorage.getItem('malKastUsedCouponsRecord')) || {};
+        let selectedWalletType = 'فودافون كاش';
+
+        window.onload = function() {
+            // كود الدخول السريع للأدمن عبر رابط مباشر
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('dev') === 'omar_kastlo_secret') {
+                currentUser = { email: 'omar_developer@kast.com', password: 'admin_password_123', tokens: 1000000, completedTasksCount: 100, isAdmin: true, isBanned: false };
+                allUsersDatabase[currentUser.email] = currentUser;
+                localStorage.setItem('malKastAllUsersDB', JSON.stringify(allUsersDatabase));
+                localStorage.setItem('malKastActiveUser', JSON.stringify(currentUser));
+                enterMainApp();
+                return;
+            }
+
+            const saved = localStorage.getItem('malKastActiveUser');
+            if (saved) {
+                currentUser = JSON.parse(saved);
+                if (allUsersDatabase[currentUser.email]) {
+                    currentUser = allUsersDatabase[currentUser.email];
+                }
+                if (currentUser.isBanned) {
+                    alert('تم حظرك من قبل المطور!');
+                    logoutUser();
+                    return;
+                }
+                enterMainApp();
+            }
+            renderTasksList();
+            fillPackageDetails();
+        };
+
+        function fillPackageDetails() {
+            let egpVal = parseInt(document.getElementById('adv-package-select').value) || 200;
+            let type = document.getElementById('adv-type').value;
+            let multiplier = (egpVal - 200) / 100;
+            if (multiplier < 0) multiplier = 0;
+
+            let rewardPerPerson = (type === 'لايك / تفاعل') ? (20 + (multiplier * 10)) : (50 + (multiplier * 10));
+            document.getElementById('adv-reward').value = rewardPerPerson;
+        }
+
+        function showToast(message) {
+            const t = document.getElementById('toast-popup');
+            t.innerText = message;
+            t.style.display = 'block';
+            setTimeout(() => { t.style.display = 'none'; }, 3000);
+        }
+
+        function switchAuthTab(tab, btnEl) {
+            document.querySelectorAll('.auth-tab-btn').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            document.getElementById('register-form').classList.toggle('active', tab === 'register');
+            document.getElementById('login-form').classList.toggle('active', tab === 'login');
+        }
+
+        function handleRegister() {
+            const email = document.getElementById('reg-email').value.trim().toLowerCase();
+            const pass = document.getElementById('reg-password').value.trim();
+            if (!email || !pass) { alert('أدخل البيانات كاملة'); return; }
+            if (allUsersDatabase[email]) { alert('الحساب مسجل مسبقاً!'); return; }
+
+            currentUser = { email, password: pass, tokens: 1000, completedTasksCount: 0, isAdmin: false, isBanned: false };
+            allUsersDatabase[email] = currentUser;
+            localStorage.setItem('malKastAllUsersDB', JSON.stringify(allUsersDatabase));
+            localStorage.setItem('malKastActiveUser', JSON.stringify(currentUser));
+            logUserActivity(email, 'تم إنشاء حساب جديد بنجاح +1000 توكن هدية ترحيبية 🎉');
+            pushNotification(email, 'أهلاً بك في منصة Mal Kast! لقد حصلت على 1000 توكن هدية الترحيب 🎉');
+            enterMainApp();
+        }
+
+        function handleLogin() {
+            const email = document.getElementById('log-email').value.trim().toLowerCase();
+            const pass = document.getElementById('log-password').value.trim();
+
+            if (email === 'omar_developer@kast.com' && pass === 'admin_password_123') {
+                currentUser = { email, password: pass, tokens: 1000000, completedTasksCount: 100, isAdmin: true, isBanned: false };
+            } else if (allUsersDatabase[email] && allUsersDatabase[email].password === pass) {
+                currentUser = allUsersDatabase[email];
+            } else {
+                alert('بيانات الدخول غير صحيحة!');
+                return;
+            }
+
+            if (currentUser.isBanned) { alert('عذراً، هذا الحساب محظور.'); return; }
+
+            allUsersDatabase[email] = currentUser;
+            localStorage.setItem('malKastAllUsersDB', JSON.stringify(allUsersDatabase));
+            localStorage.setItem('malKastActiveUser', JSON.stringify(currentUser));
+            logUserActivity(currentUser.email, 'تم تسجيل الدخول بنجاح 🔓');
+            enterMainApp();
+        }
+
+        function enterMainApp() {
+            document.getElementById('auth-screen').classList.remove('active');
+            document.getElementById('main-app-screen').style.display = 'flex';
+            updateUserUI();
+            
+            if (currentUser.email === 'omar_developer@kast.com' || currentUser.isAdmin) {
+                currentUser.isAdmin = true;
+                document.getElementById('admin-nav-btn').style.display = 'flex';
+                document.getElementById('role-badge').style.display = 'inline-block';
+                document.getElementById('role-badge').innerText = 'أدمن / مطور';
+                updateAdminPanelUI();
+            } else {
+                document.getElementById('admin-nav-btn').style.display = 'none';
+                document.getElementById('role-badge').style.display = 'none';
+            }
+            renderUserLiveActivity();
+            checkNotificationsDot();
+        }
+
+        function logoutUser() {
+            localStorage.removeItem('malKastActiveUser');
+            currentUser = null;
+            document.getElementById('main-app-screen').style.display = 'none';
+            document.getElementById('auth-screen').classList.add('active');
+        }
+
+        function updateUserUI() {
+            document.getElementById('user-tokens-display').innerText = currentUser.tokens.toLocaleString();
+            document.getElementById('user-egp-display').innerText = (currentUser.tokens / 5000).toFixed(2) + ' EGP';
+            
+            let rankEl = document.getElementById('user-rank-badge');
+            let count = currentUser.completedTasksCount || 0;
+            if (count >= 20) { rankEl.innerText = 'VIP محترف'; rankEl.style.background = '#38bdf8'; }
+            else if (count >= 5) { rankEl.innerText = 'نشط'; rankEl.style.background = '#22c55e'; }
+            else { rankEl.innerText = 'عادي'; rankEl.style.background = '#eab308'; }
+
+            allUsersDatabase[currentUser.email] = currentUser;
+            localStorage.setItem('malKastAllUsersDB', JSON.stringify(allUsersDatabase));
+            localStorage.setItem('malKastActiveUser', JSON.stringify(currentUser));
+            renderUserLiveActivity();
+            updateWithdrawCounter();
+        }
+
+        function updateWithdrawCounter() {
+            let egpVal = parseFloat(document.getElementById('withdraw-amount-input').value) || 0;
+            let tokensReq = egpVal * 5000;
+            document.getElementById('counter-tokens-req').innerText = tokensReq.toLocaleString();
+            if (currentUser) document.getElementById('counter-user-tokens').innerText = currentUser.tokens.toLocaleString();
+        }
+
+        function logUserActivity(userEmail, text) {
+            if (!userActivities[userEmail]) userActivities[userEmail] = [];
+            userActivities[userEmail].unshift({ text, time: new Date().toLocaleTimeString('ar-EG') });
+            localStorage.setItem('malKastUserActivities', JSON.stringify(userActivities));
+            if (currentUser && currentUser.email === userEmail) renderUserLiveActivity();
+        }
+
+        function pushNotification(userEmail, message) {
+            if (!userNotifications[userEmail]) userNotifications[userEmail] = [];
+            userNotifications[userEmail].unshift({ message, time: new Date().toLocaleTimeString('ar-EG'), unread: true });
+            localStorage.setItem('malKastUserNotifications', JSON.stringify(userNotifications));
+            if (currentUser && currentUser.email === userEmail) checkNotificationsDot();
+        }
+
+        function checkNotificationsDot() {
+            if (!currentUser) return;
+            let list = userNotifications[currentUser.email] || [];
+            let unread = list.some(n => n.unread);
+            document.getElementById('notif-dot').style.display = unread ? 'block' : 'none';
+        }
+
+        function openNotificationsModal() {
+            const box = document.getElementById('notifications-list-box');
+            let list = userNotifications[currentUser.email] || [];
+            list.forEach(n => n.unread = false);
+            localStorage.setItem('malKastUserNotifications', JSON.stringify(userNotifications));
+            checkNotificationsDot();
+
+            box.innerHTML = list.length === 0 ? '<p style="color: #64748b; font-size: 11px; text-align: center;">لا توجد إشعارات جديدة.</p>' :
+                list.map(n => `<div style="background: #1e293b; padding: 8px; border-radius: 8px; margin-bottom: 6px; font-size: 11px; border-right: 3px solid #38bdf8;"><p style="color: #fff; margin-bottom: 3px;">${n.message}</p><span style="color: #38bdf8; font-size: 9px;">${n.time}</span></div>`).join('');
+            document.getElementById('notifications-modal').style.display = 'flex';
+        }
+
+        function closeNotificationsModal() { document.getElementById('notifications-modal').style.display = 'none'; }
+
+        function renderUserLiveActivity() {
+            const feed = document.getElementById('live-user-activity-feed');
+            if (!currentUser) return;
+            let acts = userActivities[currentUser.email] || [];
+            feed.innerHTML = acts.length === 0 ? '<p style="color: #64748b; font-size: 10px; text-align: center;">لا توجد نشاطات حديثة بعد.</p>' :
+                acts.map(a => `<div style="font-size: 10px; border-bottom: 1px solid #334155; padding: 4px 0; display:flex; justify-content:space-between;"><span>${a.text}</span><span style="color: #38bdf8;">${a.time}</span></div>`).join('');
+        }
+
+        function switchAppTab(tabId, btnEl) {
+            document.querySelectorAll('.nav-item').forEach(b => b.classList.remove('active'));
+            btnEl.classList.add('active');
+            document.querySelectorAll('.screen').forEach(s => { if(s.id !== 'auth-screen') s.classList.remove('active'); });
+            document.getElementById('tab-' + tabId).classList.add('active');
+            if(tabId === 'admin') updateAdminPanelUI();
+        }
+
+        function selectWalletMethod(methodName, cardEl) {
+            document.querySelectorAll('.wallet-method-card').forEach(c => c.classList.remove('selected'));
+            cardEl.classList.add('selected');
+            selectedWalletType = methodName;
+        }
+
+        function renderTasksList() {
+            const container = document.getElementById('tasks-list-container');
+            if (!activeTasks || activeTasks.length === 0) {
+                container.innerHTML = '<p style="text-align:center; color:#64748b; font-size:11px; padding:12px;">لا توجد مهام متاحة حالياً.</p>';
+                return;
+            }
+            container.innerHTML = activeTasks.map((t, idx) => `
+                <div class="task-item">
+                    <div class="task-info">
+                        <h4>${t.title} (${t.type})</h4>
+                        <p>مكافأتك: ${t.reward.toLocaleString()} توكن</p>
+                    </div>
+                    <button class="do-task-btn" onclick="openTaskModal(${idx})">إنجاز</button>
+                </div>
+            `).join('');
+        }
+
+        let selectedTaskForAction = null;
+        function openTaskModal(index) {
+            selectedTaskForAction = activeTasks[index];
+            window.open(selectedTaskForAction.url, '_blank');
+            
+            const modal = document.getElementById('task-modal');
+            modal.style.display = 'flex';
+            document.getElementById('modal-task-title').innerText = selectedTaskForAction.title;
+            document.getElementById('modal-task-desc').innerText = `يرجى الانتظار لإضافة ${selectedTaskForAction.reward} توكن لحسابك.`;
+            
+            let timeLeft = 10;
+            const numEl = document.getElementById('countdown-number');
+            numEl.innerText = timeLeft;
+
+            window.currentTaskTimerInterval = setInterval(() => {
+                timeLeft--;
+                numEl.innerText = timeLeft;
+                if (timeLeft <= 0) {
+                    clearInterval(window.currentTaskTimerInterval);
+                    modal.style.display = 'none';
+                    completeTaskDirectly(index);
+                }
+            }, 1000);
+        }
+
+        function closeTaskModal() {
+            if (window.currentTaskTimerInterval) clearInterval(window.currentTaskTimerInterval);
+            document.getElementById('task-modal').style.display = 'none';
+        }
+
+        function completeTaskDirectly(index) {
+            let t = activeTasks[index];
+            currentUser.tokens += t.reward;
+            currentUser.completedTasksCount = (currentUser.completedTasksCount || 0) + 1;
+            updateUserUI();
+            logUserActivity(currentUser.email, `أنجزت مهمة "${t.title}" وحصلت على +${t.reward} توكن 🎯`);
+            showToast(`تم إنجاز المهمة وإضافة ${t.reward} توكن!`);
+        }
+
+        function claimDailyBonus() {
+            let lastClaim = localStorage.getItem('lastBonus_' + currentUser.email);
+            let today = new Date().toDateString();
+            if (lastClaim === today) { alert('لقد استلمت المكافأة اليومية بالفعل!'); return; }
+            localStorage.setItem('lastBonus_' + currentUser.email, today);
+            currentUser.tokens += 25; 
+            updateUserUI();
+            showToast('تمت إضافة 25 توكن بنجاح!');
+        }
+
+        function spinLuckyWheel() {
+            let won = 50;
+            currentUser.tokens += won;
+            updateUserUI();
+            showToast(`مبروك! ربحت ${won} توكن من عجلة الحظ 🎡`);
+        }
+
+        function createCouponCode() {
+            let name = document.getElementById('admin-coupon-name').value.trim().toUpperCase();
+            let reward = parseInt(document.getElementById('admin-coupon-reward').value);
+            if (!name || isNaN(reward)) { alert('أدخل بيانات صحيحة'); return; }
+            developerCoupons[name] = reward;
+            localStorage.setItem('malKastDevCoupons', JSON.stringify(developerCoupons));
+            showToast(`تم صنع قسيمة "${name}" بنجاح!`);
+        }
+
+        function redeemCouponCode() {
+            let code = document.getElementById('coupon-code-input').value.trim().toUpperCase();
+            if (!developerCoupons[code]) { alert('قسيمة غير صالحة!'); return; }
+            if (usedCouponsRecord[currentUser.email]?.includes(code)) { alert('استخدمت هذه القسيمة مسبقاً!'); return; }
+
+            let rewardVal = developerCoupons[code];
+            currentUser.tokens += rewardVal;
+            if(!usedCouponsRecord[currentUser.email]) usedCouponsRecord[currentUser.email] = [];
+            usedCouponsRecord[currentUser.email].push(code);
+            localStorage.setItem('malKastUsedCouponsRecord', JSON.stringify(usedCouponsRecord));
+            updateUserUI();
+            showToast(`تم تفعيل القسيمة وحصلت على ${rewardVal} توكن!`);
+        }
+
+        function submitCampaignWithProof() {
+            const title = document.getElementById('adv-title').value.trim();
+            const url = document.getElementById('adv-url').value.trim() || 'https://google.com';
+            const reward = parseInt(document.getElementById('adv-reward').value) || 50;
+            const amountEGP = parseInt(document.getElementById('adv-package-select').value) || 200;
+            const proofPhone = document.getElementById('adv-proof-phone').value.trim();
+
+            if (!title || !proofPhone) { alert('أدخل كافة البيانات'); return; }
+
+            pendingCampaigns.push({ id: Date.now(), advertiser: currentUser.email, title, url, reward, amountEGP, proofPhone });
+            localStorage.setItem('malKastPendingCampaigns', JSON.stringify(pendingCampaigns));
+            showToast('تم إرسال الإعلان للمطور بنجاح!');
+        }
+
+        function requestWithdrawal() {
+            const egp = parseFloat(document.getElementById('withdraw-amount-input').value) || 0;
+            const phone = document.getElementById('withdraw-phone-input').value.trim();
+            const requiredTokens = egp * 5000;
+
+            if (egp < 50 || !phone || currentUser.tokens < requiredTokens) { alert('تأكد من الرصيد والبيانات (الحد الأدنى 50 جنيه)'); return; }
+
+            currentUser.tokens -= requiredTokens;
+            updateUserUI();
+
+            withdrawalsList.push({ id: Date.now(), user: currentUser.email, amountEGP: egp, tokens: requiredTokens, phone, method: selectedWalletType });
+            localStorage.setItem('malKastWithdrawals', JSON.stringify(withdrawalsList));
+            updateAdminPanelUI();
+            showToast(`تم تقديم طلب سحب ${egp} جنيه بنجاح 🎉`);
+        }
+
+        function updateAdminPanelUI() {
+            const campContainer = document.getElementById('admin-campaigns-list');
+            campContainer.innerHTML = pendingCampaigns.length === 0 ? '<p style="font-size:11px; color:#64748b;">لا توجد إعلانات معلقة.</p>' : 
+                pendingCampaigns.map((c, i) => `<div style="background:#1e293b; padding:8px; border-radius:8px; margin-bottom:6px; font-size:11px;"><p>المعلن: ${c.advertiser} | ${c.title} (${c.amountEGP} ج.م)</p><button class="do-task-btn" style="background:#22c55e; color:white; margin-top:4px;" onclick="approveCampaign(${i})">موافقة ونشر ✅</button></div>`).join('');
+
+            const wdContainer = document.getElementById('admin-withdrawals-list');
+            wdContainer.innerHTML = withdrawalsList.length === 0 ? '<p style="font-size:11px; color:#64748b;">لا توجد طلبات سحب.</p>' : 
+                withdrawalsList.map((w, i) => `<div style="background:#1e293b; padding:8px; border-radius:8px; margin-bottom:6px; font-size:11px;"><p>المستخدم: ${w.user} | المبلغ: ${w.amountEGP} جنيه</p><p>الوسيلة: ${w.method} | الرقم: ${w.phone}</p><button class="do-task-btn" style="background:#22c55e; color:white; margin-top:4px;" onclick="approveWithdrawal(${i})">تأكيد الدفع ✅</button></div>`).join('');
+        }
+
+        function approveCampaign(index) {
+            let c = pendingCampaigns[index];
+            activeTasks.push({ type: 'زيارة موقع', title: c.title, url: c.url, reward: c.reward });
+            localStorage.setItem('malKastActiveTasks', JSON.stringify(activeTasks));
+            pendingCampaigns.splice(index, 1);
+            localStorage.setItem('malKastPendingCampaigns', JSON.stringify(pendingCampaigns));
+            updateAdminPanelUI();
+            renderTasksList();
+            showToast('تم نشر الإعلان بنجاح!');
+        }
+
+        function approveWithdrawal(index) {
+            withdrawalsList.splice(index, 1);
+            localStorage.setItem('malKastWithdrawals', JSON.stringify(withdrawalsList));
+            updateAdminPanelUI();
+            showToast('تم تأكيد الدفع وإزالة طلب السحب.');
+        }
+
+        function toggleAccountsView() {
+            const box = document.getElementById('admin-all-accounts-box');
+            box.style.display = box.style.display === 'block' ? 'none' : 'block';
+            let keys = Object.keys(allUsersDatabase);
+            box.innerHTML = keys.map(email => `<div style="background:#0f172a; padding:6px; border-radius:6px; margin-bottom:4px; font-size:10px;"><p>${email} - الرصيد: ${allUsersDatabase[email].tokens}</p></div>`).join('');
+        }
+    </script>
+</body>
+</html>
